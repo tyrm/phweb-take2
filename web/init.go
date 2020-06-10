@@ -7,6 +7,7 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"github.com/juju/loggo"
 	"golang.org/x/oauth2"
 	"html/template"
@@ -21,16 +22,30 @@ var (
 	oauth2Config   oauth2.Config
 	oauth2Verifier *oidc.IDTokenVerifier
 	store          *pgstore.PGStore
+	staticFiles    *packr.Box
 	templates      *packr.Box
 )
 
-type TemplateCommon struct {
-	AlertEror *TemplateAlert
-	AlertWarn *TemplateAlert
-	PageTitle string
+type templateVars interface {
+	SetUser(u *models.User)
 }
 
-type TemplateAlert struct {
+type templateCommon struct {
+	AlertError   templateAlert
+	AlertSuccess templateAlert
+	AlertWarn    templateAlert
+
+	NavbarActive string
+	PageTitle    string
+	User         *models.User
+}
+
+func (t *templateCommon) SetUser(u *models.User) {
+	t.User = u
+	return
+}
+
+type templateAlert struct {
 	Header string
 	Text   string
 }
@@ -45,6 +60,9 @@ func Init(secretKey, providerURL, clientID, clientSecret, callbackURL string) er
 
 	// load templates
 	templates = packr.New("htmlTemplates", "./templates")
+
+	// load templates
+	staticFiles = packr.New("staticFiles", "./static")
 
 	// Init Sessions
 	gs, err := pgstore.NewPGStoreFromPool(models.GetDBConn(), []byte(secretKey))
@@ -79,8 +97,12 @@ func Init(secretKey, providerURL, clientID, clientSecret, callbackURL string) er
 
 	// Setup Router
 	r := mux.NewRouter()
+
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(staticFiles)))
+
 	r.HandleFunc("/", HandleIndex).Methods("GET")
 	r.HandleFunc("/login", HandleLogin).Methods("GET")
+	r.HandleFunc("/logout", HandleLogout).Methods("GET")
 	r.HandleFunc("/oauth/callback", HandleOauthCallback).Methods("GET")
 
 	go func() {
@@ -112,4 +134,23 @@ func CompileTemplate(filename string) (*template.Template, error) {
 	}
 
 	return tmpl, nil
+}
+
+// privates
+func initSession(response http.ResponseWriter, request *http.Request, tmplVars templateVars) (*sessions.Session, error) {
+	// Init Session
+	us, err := store.Get(request, "session-key")
+	if err != nil {
+		return nil, err
+	}
+
+	// Get User
+	val := us.Values["user"]
+	var user models.User
+	var ok bool
+	if user, ok = val.(models.User); ok {
+		tmplVars.SetUser(&user)
+	}
+
+	return us, nil
 }

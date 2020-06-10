@@ -2,17 +2,15 @@ package web
 
 import "net/http"
 
-
 type IndexTemplate struct {
-	TemplateCommon
+	templateCommon
 }
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	tmplVars := &IndexTemplate{}
+	tmplVars :=  IndexTemplate{}
+	_, err := initSession(w, r, &tmplVars)
 
-	tmplVars.AlertWarn = &TemplateAlert{
-		Text: "stuff",
-	}
+	tmplVars.PageTitle = "Index"
 
 	t, err := CompileTemplate("index.html")
 	if err != nil {

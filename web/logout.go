@@ -2,10 +2,9 @@ package web
 
 import (
 	"net/http"
-	"phsite/util"
 )
 
-func HandleLogin(w http.ResponseWriter, r *http.Request) {
+func HandleLogout(w http.ResponseWriter, r *http.Request) {
 	// Init Session
 	us, err := store.Get(r, "session-key")
 	if err != nil {
@@ -14,14 +13,13 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newState := util.RandString(16)
-	us.Values["oauth-state"] = newState
+	// Set user to nil
+	us.Values["user"] = nil
 	err = us.Save(r, w)
 	if err != nil {
-		logger.Warningf("Could not save session: %s", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, oauth2Config.AuthCodeURL(newState), http.StatusFound)
+	http.Redirect(w, r, "/", http.StatusFound)
 }

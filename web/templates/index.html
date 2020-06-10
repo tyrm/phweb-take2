@@ -1,3 +1,51 @@
-{{ template "header" . }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>PUPHAUS</title>
+    <style>
+        a, a:hover, a:active {
+            color: black;
+        }
+        body {
+            background-color: #FFFFFF;
+            font-family: sans-serif;
+        }
 
-{{ template "footer" . }}
+        div.container {
+            padding-top: 10%;
+            text-align: center;
+        }
+
+        div.container img {
+        }
+
+        div.login {
+            padding: 5px;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        div.ref {
+            padding: 5px;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="login">
+    <a href="/login">Login</a>
+</div>
+<div class="container">
+    <img src="/static/img/noun_134522.svg" width="200" alt="pup"/>
+    <img src="/static/img/noun_8503.svg" width="200" alt="haus"/>
+</div>
+<div class="ref">
+    art by <a href="https://thenounproject.com/bonste/">Stefania Bonacasa</a> and <a href="https://thenounproject.com/bjorna1/">Björn Andersson</a> from the Noun Project
+</div>
+</body>
+</html>

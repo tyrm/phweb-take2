@@ -49,7 +49,7 @@ func HandleOauthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert into database or update existing record
+	// Insert into database or update existing record0
 	err = user.Upsert()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -57,6 +57,7 @@ func HandleOauthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save user to session
+	us.Values["oauth-state"] = nil
 	us.Values["user"] = user
 	err = us.Save(r, w)
 	if err != nil {
