@@ -8,21 +8,24 @@ import (
 type User struct {
 	ID uint `json:"-"`
 
-	Subject           string `json:"sub"`
+	Subject           string  `json:"sub"`
 	Email             *string `json:"email"`
 	Name              *string `json:"name"`
 	PreferredUsername *string `json:"preferred_username"`
 
 	// unsaved values
-	Version               int64    `json:"ver"`
-	Issuer                string   `json:"iss"`
-	Audience              string   `json:"aud"`
-	IssuedAt              int64    `json:"iat"`
-	ExpiresAt             int64    `json:"exp"`
-	TokenID               string   `json:"jti"`
-	AuthenticationMethods []string `json:"amr"`
-	IdentityProvider      string   `json:"idp"`
-	AuthTime              int64    `json:"auth_time"`
+	Audience        string   `json:"aud"`
+	AuthnCtxClsRef  string   `json:"acr"`
+	AuthorizedParty string   `json:"azp"`
+	AuthTime        int64    `json:"auth_time"`
+	EmailVerified   bool     `json:"email_verified"`
+	ExpiresAt       int64    `json:"exp"`
+	Groups          []string `json:"groups"`
+	IssuedAt        int64    `json:"iat"`
+	Issuer          string   `json:"iss"`
+	SessionState    string   `json:"session_state"`
+	TokenID         string   `json:"jti"`
+	Type            string   `json:"typ"`
 
 	// metadata
 	CreatedAt time.Time `json:"-"`

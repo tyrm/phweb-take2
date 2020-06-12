@@ -2,12 +2,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="/static/css/bootstrap-4.5.0.min.css" rel="stylesheet">
+    <link href="/static/css/fontawesome-free-5.13.0-all.min.css" rel="stylesheet">
 
     <title>{{.PageTitle}}</title>
 </head>
@@ -19,27 +18,31 @@
         <div class="collapse navbar-collapse" id="navbarMainToggle">
             <a class="navbar-brand" href="/">PupHaus</a>
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            {{- range .NavBar -}}
+                {{- if .Children }}
+                <li class="nav-item dropdown{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}">
+                    <a class="nav-link dropdown-toggle" href="{{.URL}}" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{- .Text -}}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {{- range .Children}}
+                            <a class="dropdown-item{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}" href="{{.URL}}">{{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{.Text}}</a>
+                        {{- end}}
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                {{- else}}
+                <li class="nav-item{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}">
+                    <a class="nav-link" href="{{.URL}}">{{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{.Text}}{{if .Active}} <span class="sr-only">(current)</span>{{end}}</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
+                {{- end -}}
+            {{- end}}
             </ul>
             <!--form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
             </form-->
-
             <span class="navbar-text">
-                {{ if .User }}
-                    {{ .User.Name }}
-                {{else}}
-                    <a href="/login">Login</a>
-                {{end}}
+                {{ .User.Name }}
             </span>
         </div>
     </nav>
@@ -65,9 +68,32 @@
 {{define "footer"}}
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="/static/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="/static/js/popper-1.16.0.min.js"></script>
+    <script src="/static/js/bootstrap-4.5.0.min.js"></script>
 </body>
 </html>
 {{- end}}
+
+{{define "navbar"}}
+<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+{{- range . -}}
+    {{- if .Children }}
+    <li class="nav-item dropdown{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}">
+        <a class="nav-link dropdown-toggle" href="{{.URL}}" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{- .Text -}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            {{- range .Children}}
+                <a class="dropdown-item{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}" href="{{.URL}}">{{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{.Text}}</a>
+            {{- end}}
+        </div>
+    </li>
+    {{- else}}
+    <li class="nav-item{{if .Active}} active{{end}}{{if .Disabled}} disabled{{end}}">
+        <a class="nav-link" href="{{.URL}}">{{if .FAIcon}}<i class="fas fa-{{.FAIcon}}"></i> {{end}}{{.Text}}{{if .Active}} <span class="sr-only">(current)</span>{{end}}</a>
+    </li>
+    {{- end -}}
+{{- end}}
+</ul>
+{{end}}

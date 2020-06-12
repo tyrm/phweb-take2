@@ -1,0 +1,77 @@
+{{template "header" .}}
+<div class="row">
+    <div class="col-md">
+        <h1>User</h1>
+        <dl class="row">
+            <dt class="col-sm-4">ID</dt>
+            <dd class="col-sm-8">{{.User.ID}}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Subject</dt>
+            <dd class="col-sm-8">{{.User.Subject}}</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">{{.User.Email}}</dd>
+
+            <dt class="col-sm-4">Name</dt>
+            <dd class="col-sm-8">{{.User.Name}}</dd>
+
+            <dt class="col-sm-4 text-truncate">Preferred Username</dt>
+            <dd class="col-sm-8">{{.User.PreferredUsername}}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Audience</dt>
+            <dd class="col-sm-8">{{.User.Audience}}</dd>
+
+            <dt class="col-sm-4 text-truncate">Authentication Context Class Reference</dt>
+            <dd class="col-sm-8">{{.User.AuthnCtxClsRef}}</dd>
+
+            <dt class="col-sm-4">Authorized Party</dt>
+            <dd class="col-sm-8">{{.User.AuthorizedParty}}</dd>
+
+            <dt class="col-sm-4">AuthTime</dt>
+            <dd class="col-sm-8">{{.User.AuthTime}}</dd>
+
+            <dt class="col-sm-4">EmailVerified</dt>
+            <dd class="col-sm-8">{{.User.EmailVerified}}</dd>
+
+            <dt class="col-sm-4">ExpiresAt</dt>
+            <dd class="col-sm-8">{{.User.ExpiresAt}}</dd>
+
+            <dt class="col-sm-4">Groups</dt>
+            <dd class="col-sm-8">
+                <ul>
+                    {{- range .User.Groups}}
+                    <li>{{.}}</li>
+                    {{- end}}
+                </ul>
+            </dd>
+
+            <dt class="col-sm-4">IssuedAt</dt>
+            <dd class="col-sm-8">{{.User.IssuedAt}}</dd>
+
+            <dt class="col-sm-4">Issuer</dt>
+            <dd class="col-sm-8">{{.User.Issuer}}</dd>
+
+            <dt class="col-sm-4">SessionState</dt>
+            <dd class="col-sm-8">{{.User.SessionState}}</dd>
+
+            <dt class="col-sm-4">TokenID</dt>
+            <dd class="col-sm-8">{{.User.TokenID}}</dd>
+
+            <dt class="col-sm-4">Type</dt>
+            <dd class="col-sm-8">{{.User.Type}}</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-4">Created At</dt>
+            <dd class="col-sm-8">{{.User.CreatedAt}}</dd>
+
+            <dt class="col-sm-4">Updated At</dt>
+            <dd class="col-sm-8">{{.User.UpdatedAt}}</dd>
+        </dl>
+    </div>
+    <div class="col-md">
+        One of two columns
+    </div>
+</div>
+{{template "footer" .}}

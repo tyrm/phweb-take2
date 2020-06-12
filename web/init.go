@@ -28,6 +28,12 @@ var (
 
 type templateVars interface {
 	SetUser(u *models.User)
+	SetNavbar(n *[]templateNavbarNode)
+}
+
+type templateAlert struct {
+	Header string
+	Text   string
 }
 
 type templateCommon struct {
@@ -35,9 +41,14 @@ type templateCommon struct {
 	AlertSuccess templateAlert
 	AlertWarn    templateAlert
 
-	NavbarActive string
+	NavBar       *[]templateNavbarNode
 	PageTitle    string
 	User         *models.User
+}
+
+func (t *templateCommon) SetNavbar(n *[]templateNavbarNode) {
+	t.NavBar = n
+	return
 }
 
 func (t *templateCommon) SetUser(u *models.User) {
@@ -45,9 +56,16 @@ func (t *templateCommon) SetUser(u *models.User) {
 	return
 }
 
-type templateAlert struct {
-	Header string
-	Text   string
+type templateNavbarNode struct {
+	Text     string
+	URL      string
+	MatchStr string
+	FAIcon   string
+
+	Active   bool
+	Disabled bool
+
+	Children []*templateNavbarNode
 }
 
 func Close() {
@@ -105,6 +123,13 @@ func Init(secretKey, providerURL, clientID, clientSecret, callbackURL string) er
 	r.HandleFunc("/logout", HandleLogout).Methods("GET")
 	r.HandleFunc("/oauth/callback", HandleOauthCallback).Methods("GET")
 
+	// Protected Pages
+	protected := r.PathPrefix("/").Subrouter()
+	protected.Use(MiddlewareRequireAuth)
+	protected.HandleFunc("/debug", HandleDebug).Methods("GET")
+	protected.HandleFunc("/home", HandleHome).Methods("GET")
+	protected.HandleFunc("/mastodon", HandleMastodon).Methods("GET")
+
 	go func() {
 		err := http.ListenAndServe(":8080", r)
 		if err != nil {
@@ -151,6 +176,9 @@ func initSession(response http.ResponseWriter, request *http.Request, tmplVars t
 	if user, ok = val.(models.User); ok {
 		tmplVars.SetUser(&user)
 	}
+
+	// Get Navbar
+	tmplVars.SetNavbar(makeNavbar(request.URL.Path))
 
 	return us, nil
 }
